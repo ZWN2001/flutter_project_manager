@@ -5,7 +5,9 @@ import 'package:admin/view/dashboard/components/storage_details.dart';
 import 'package:admin/view/log/components/log_item_card.dart';
 import 'package:admin/view/log/log_logic.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class LogPage extends StatelessWidget {
@@ -25,36 +27,19 @@ class LogPage extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 5,
-                  child: Container(
-                    child: AnimationLimiter(
-                      child: ListView.builder(
-                        itemCount: 6,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 675),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: LogItemCard(
-                                  senderName: "senderName",
-                                  commitContent: "commitContent",
-                                  projectName: "projectName",
-                                  time: 'time',
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  child: Obx(() => controller.allLogList.isEmpty
+                      ? noLogContainer()
+                      : logListContainer()),
                 ),
                 if (!Responsive.isMobile(context))
                   Expanded(
                     flex: 2,
-                    child: StorageDetails(),
+                    child: Obx(
+                      () => StorageDetails(
+                        total: controller.totalDemand.value,
+                        numList: controller.demandDetailNum,
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -91,6 +76,57 @@ class LogPage extends StatelessWidget {
                     child: StorageDetails(),),
               ],
             ),*/
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container logListContainer() {
+    return Container(
+      child: AnimationLimiter(
+        child: ListView.builder(
+          itemCount: controller.allLogList.length,
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              duration: const Duration(milliseconds: 675),
+              child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: LogItemCard(
+                    senderName: controller.allLogList.elementAt(index)['cer'],
+                    commitContent:
+                        controller.allLogList.elementAt(index)['commit'],
+                    projectName:
+                        controller.allLogList.elementAt(index)['project'],
+                    time: controller.allLogList.elementAt(index)['ctime'],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Container noLogContainer() {
+    return Container(
+      margin: EdgeInsets.only(top: 100),
+      child: Center(
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              'assets/icons/empty_content.svg',
+              width: 100,
+              height: 152.5,
+            ),
+            Text(
+              "还没有团队日志哦",
+              style: TextStyle(fontSize: 20, color: Colors.white54),
+            )
           ],
         ),
       ),

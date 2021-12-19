@@ -88,7 +88,7 @@ class LogItemCard extends StatelessWidget {
                 ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: 80),
                   child: Text(
-                    "commitContentcommitContentcommitContentcommitContentcommitContentcommitContentcomm",
+                    commitContent,
                     style: TextStyle(fontSize: 16),
                   ),
                 ),

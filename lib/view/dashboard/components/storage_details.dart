@@ -6,8 +6,13 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 
 class StorageDetails extends StatelessWidget {
-   StorageDetails({
+  final int total;
+  final List<int> numList;
+
+  StorageDetails({
     Key? key,
+    required this.total,
+    required this.numList
   }) : super(key: key);
 
   @override
@@ -36,35 +41,49 @@ class StorageDetails extends StatelessWidget {
             centralTitle: '共计',
             centralSubTitle: 'xxx条',
           ),*/
-          MyPieChart(),
+          MyPieChart(
+              total: total, numList: numList,),
           InfoCard(
-            svgSrc: "assets/icons/Documents.svg",
-            title: "Documents Files",
-            amount: "1.3GB",
-            subTitle: '1328',
+            svgSrc: "assets/icons/demand_created.svg",
+            title: "已创建",
+            amount: "",
+            subTitle: numList[0].toString(),
           ),
           InfoCard(
-            svgSrc: "assets/icons/media.svg",
-            title: "Media Files",
-            amount: "15.3GB",
-            subTitle: '1328',
+            svgSrc: "assets/icons/demand_doing.svg",
+            title: "执行中",
+            amount: "",
+            subTitle: numList[1].toString(),
           ),
           InfoCard(
-            svgSrc: "assets/icons/folder.svg",
-            title: "Other Files",
-            amount: "1.3GB",
-            subTitle: '1328',
+            svgSrc: "assets/icons/demand_rejected.svg",
+            title: "已拒绝",
+            amount: "",
+            subTitle: numList[2].toString(),
           ),
           InfoCard(
-            svgSrc: "assets/icons/unknown.svg",
-            title: "Unknown",
-            amount: "1.3GB",
-            subTitle: '140',
+            svgSrc: "assets/icons/demand_fail.svg",
+            title: "未通过",
+            amount: "",
+            subTitle: numList[3].toString(),
+          ),
+          InfoCard(
+            svgSrc: "assets/icons/demand_finished.svg",
+            title: "已完成",
+            amount: "",
+            subTitle: numList[4].toString(),
+          ),
+          InfoCard(
+            svgSrc: "assets/icons/demand_overtime.svg",
+            title: "已超时",
+            amount: "",
+            subTitle: numList[5].toString(),
           ),
         ],
       ),
     );
   }
+
   final List<PieChartSectionData> paiChartSelectionDatas = [
     PieChartSectionData(
       color: primaryColor,

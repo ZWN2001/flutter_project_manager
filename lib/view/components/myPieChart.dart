@@ -3,14 +3,34 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// TODO: 还没有写传参构造函数，使用时应该传入需要显示的项目的名称和需求总数，颜色后续会修改成随机颜色
+
 class MyPieChart extends StatefulWidget {
+  final int total;
+  final List<int> numList;
+
+  MyPieChart({
+    Key? key,
+    required this.total,
+    required this.numList,
+  });
+
   @override
-  _MyPieChartState createState() => _MyPieChartState();
+  _MyPieChartState createState() =>
+      _MyPieChartState(total: total, numList: numList);
 }
 
 class _MyPieChartState extends State<MyPieChart>
     with SingleTickerProviderStateMixin {
+
+  final int total;
+  final List<int> numList;
+  int all = 0;
+
+  _MyPieChartState({
+    required this.total,
+    required this.numList,
+  });
+
   late AnimationController _animationController;
   Color enterColor = Colors.black54;
   Color exitColor = Colors.transparent;
@@ -24,19 +44,23 @@ class _MyPieChartState extends State<MyPieChart>
   //控制数字使用的
   late Animation<double> _numberAnimation;
   List _list = [
-    {"title": "i山大", "number": 50, "color": Colors.green},
-    {"title": "表情包管理", "number": 15, "color": Colors.deepOrangeAccent},
-    {"title": "二手商城", "number": 20, "color": Colors.blue},
-    {"title": "学线主站", "number": 40, "color": Colors.redAccent},
-    {"title": "小程序", "number": 10, "color": Colors.deepPurple},
+    {"title": "已完成", "number": 0, "color": Colors.green},
+    {"title": "执行中", "number": 0, "color": Colors.deepOrangeAccent},
+    {"title": "已创建", "number": 0, "color": Colors.blue},
+    {"title": "已拒绝", "number": 0, "color": Colors.redAccent},
+    {"title": "已超时", "number": 0, "color": Colors.deepPurple},
+    {"title": "未通过", "number": 0, "color": Colors.amber},
   ];
 
   @override
   void initState() {
     super.initState();
+    numList.forEach((element) {
+      all += element;
+    });
     //初始化一下
     _animationController = new AnimationController(
-        //执行时间为 1 秒
+      //执行时间为 1 秒
         duration: Duration(milliseconds: 1000),
         vsync: this);
     //在 100 ~ 1000 毫秒的区间内执行画饼的操作动画
@@ -104,7 +128,7 @@ class _MyPieChartState extends State<MyPieChart>
           ),
           child: CustomPaint(
             size: Size(200, 200),
-            painter: MyPainter(_list, _progressAnimation.value),
+            painter: MyPainter(_list, _progressAnimation.value, numList),
           ),
         ),
         MouseRegion(
@@ -119,7 +143,7 @@ class _MyPieChartState extends State<MyPieChart>
             });
           },
           // cursor: SystemMouseCursors.click,
-          child:  Container(
+          child: Container(
             width: isEnter ? 150 : 140,
             height: isEnter ? 150 : 140,
             decoration: BoxDecoration(
@@ -143,7 +167,7 @@ class _MyPieChartState extends State<MyPieChart>
                     "总需求",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),
-                  Text("100", style: TextStyle(fontSize: 18))
+                  Text(all.toString(), style: TextStyle(fontSize: 18))
                 ],
               ),
             ),
@@ -156,11 +180,13 @@ class _MyPieChartState extends State<MyPieChart>
 
 class MyPainter extends CustomPainter {
   List list;
+  List numberList;
   double progress;
 
-  MyPainter(this.list, this.progress);
+  MyPainter(this.list, this.progress, this.numberList);
 
-  Paint _paint = new Paint()..isAntiAlias = true;
+  Paint _paint = new Paint()
+    ..isAntiAlias = true;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -169,16 +195,17 @@ class MyPainter extends CustomPainter {
     double startRadian = -pi / 2;
     //需求总数量
     double total = 0.0;
-    list.forEach((element) {
-      total += element["number"];
+    numberList.forEach((element) {
+      total += element;
     });
     //开始绘制
     for (var i = 0; i < list.length; i++) {
       //当前要绘制的选项
+      var num = numberList[i];
       var item = list[i];
 
       //计算所占的比例
-      double flag = item["number"] / total;
+      double flag = num / total;
 
       //计算弧度
       double sweepRadin = flag * 2 * pi * progress;

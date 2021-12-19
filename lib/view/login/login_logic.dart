@@ -6,6 +6,7 @@ import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:admin/utils/string_util.dart';
 import 'package:admin/view/login/login_view.dart';
 import 'package:admin/view/main/main_screen.dart';
+import 'package:ai_awesome_message/ai_awesome_message.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class LoginController extends GetxController {
   Color registerColor1 = Color(0xFF212332);
   Color registerColor2 = Color(0xFF2A2D3E);
   int value = 0;
-  RxInt identify1 = 0.obs;
+  RxInt identify1 = 1.obs;
   RxInt identify2 = 1.obs;
 
   void changeCard() {
@@ -49,12 +50,26 @@ class LoginController extends GetxController {
     if (username.isEmpty || pwd.isEmpty) {
       Timer(Duration(seconds: 2), () {
         btnController.error();
-        Fluttertoast.showToast(
-          msg: "登录失败",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.redAccent,
+        Navigator.push(
+          Get.context!,
+          AwesomeMessageRoute(
+            awesomeMessage: AwesomeMessage(
+              title: "登录失败",
+              message: "信息不可为空",
+              borderRadius: 20,
+              backgroundColor: Colors.red[400]!,
+              awesomeMessagePosition: AwesomeMessagePosition.TOP,
+              margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+            ),
+            theme: null,
+          ),
         );
+        // Fluttertoast.showToast(
+        //   msg: "登录失败",
+        //   toastLength: Toast.LENGTH_LONG,
+        //   gravity: ToastGravity.BOTTOM,
+        //   backgroundColor: Colors.redAccent,
+        // );
       });
       return;
     } else {
@@ -72,11 +87,13 @@ class LoginController extends GetxController {
         ),
       );
       int code = response.data['code'];
+      print(code);
       if (code == 0) {
         String token = response.data['data'];
         String ide = identify2.value == 2 ? "技术" : "产品";
         s.setString('identity', ide);
         s.setString('token', token);
+        s.setString('username', username);
         btnController.success();
         Timer(Duration(seconds: 1), () {
           Get.to(() {
@@ -91,14 +108,28 @@ class LoginController extends GetxController {
           });
         });
       } else {
-        btnController.error();
-        Timer(Duration(seconds: 1), () {
-          Fluttertoast.showToast(
-            msg: "登录失败",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.redAccent,
+        Timer(Duration(seconds: 2), () {
+          btnController.error();
+          Navigator.push(
+            Get.context!,
+            AwesomeMessageRoute(
+              awesomeMessage: AwesomeMessage(
+                title: "登录失败",
+                message: "信息错误",
+                borderRadius: 20,
+                backgroundColor: Colors.red[400]!,
+                awesomeMessagePosition: AwesomeMessagePosition.TOP,
+                margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+              ),
+              theme: null,
+            ),
           );
+          // Fluttertoast.showToast(
+          //   msg: "登录失败",
+          //   toastLength: Toast.LENGTH_LONG,
+          //   gravity: ToastGravity.BOTTOM,
+          //   backgroundColor: Colors.redAccent,
+          // );
         });
       }
     }
@@ -142,12 +173,12 @@ class LoginController extends GetxController {
       Response response;
       Dio dio = Dio();
       response = await dio.post(
-        'http://localhost:8081/register',
+        'http://localhost:8081/user/register',
         queryParameters: {
           'username': username,
           'password': confirmPwd,
           'email': email,
-          'identity': identify2.value,
+          'identity': identify1.value,
         },
         options: Options(
           sendTimeout: 500,

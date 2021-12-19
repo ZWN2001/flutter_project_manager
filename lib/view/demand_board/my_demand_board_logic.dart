@@ -11,9 +11,9 @@ class MyDemandBoardLogic extends GetxController {
   }
 
   Future<void> getAllDoingDemandList() async {
-    await DemandAPI().getDoingDemandnList().then((value){
-      allDoingDemands = value;
-    });
+    // await DemandAPI().getDoingDemandnList().then((value){
+    //   allDoingDemands = value;
+    // });
   }
 }
 

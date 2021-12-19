@@ -31,7 +31,7 @@ class MyDemandBoardPage extends StatelessWidget {
                       // if (Responsive.isMobile(context))
                         SizedBox(height: defaultPadding),
                       // if (Responsive.isMobile(context))
-                        StorageDetails(),
+                        // StorageDetails(),
                     ],
                   ),
                 ),
