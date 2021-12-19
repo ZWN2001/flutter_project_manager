@@ -50,6 +50,7 @@ class AllMyDemands extends StatelessWidget {
                     taskCreateTime: demandsData[index]['ctime'],
                     taskManager: demandsData[index]['doer'],
                     taskDeadLine: demandsData[index]['ddl'],
+                    address: demandsData[index]['address'],
                     foldingState: openedIndices.contains(index)
                         ? FoldingState.open
                         : FoldingState.close,

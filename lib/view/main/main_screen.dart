@@ -1,5 +1,6 @@
 import 'package:admin/controllers/menu_controller.dart';
 import 'package:admin/utils/responsive.dart';
+import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:admin/view/add_demand/AddDemandView.dart';
 import 'package:admin/view/demand_board/my_demand_board_view.dart';
 import 'package:admin/view/log/log_view.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class MainScreen extends StatelessWidget {
@@ -67,7 +69,7 @@ class SideMenu extends StatelessWidget {
   }) : super(key: key);
 
    final mainScreenController = Get.put(MainScreenLogic());
-
+   SharedPreferences _s = SharedPreferenceUtil.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -83,6 +85,7 @@ class SideMenu extends StatelessWidget {
               mainScreenController.selectedItem.value = 0;
             },
           ),
+          if(_s.getString('identity') == '产品')
           DrawerListTile(
             title: "添加需求",
             svgSrc: "assets/icons/menu_add_demand.svg",

@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class MyDemandBoardLogic extends GetxController {
-  List<Map> allDoingDemands = [];
+  RxList<Map> allDoingDemands = [{}].obs;
   // List allDemandsTimeLine = [];
   String demandFileUrl = '';
 
@@ -18,7 +18,8 @@ class MyDemandBoardLogic extends GetxController {
 
   void getAllDoingDemandList()  {
      DemandAPI().getDoingDemandnList().then((value){
-      allDoingDemands = value;
+      allDoingDemands.value = value;
+      update();
     });
   }
 

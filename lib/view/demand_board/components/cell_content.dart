@@ -1,7 +1,9 @@
+import 'package:admin/controllers/api.dart';
 import 'package:admin/utils/dialog.dart';
 import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:admin/view/components/inkwell_basic_card_view.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +11,7 @@ import 'package:timelines/timelines.dart';
 
 import '../../../utils/color_hex.dart';
 import '../my_demand_board_logic.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 封面
 Widget taskCardCover({required int id, required int taskState, required String taskProject,
@@ -147,9 +150,9 @@ Widget taskCardDetailCover({required int id, required int taskState, required St
               ),
               Expanded(child: SizedBox(width: 12,)),
               if(s.getString('identity') == '产品')
-                createrMenu,
+                createrMenuWidget(taskState, id, taskCreater, taskManager),
               if(s.getString('identity') == '技术')
-                managerMenu,
+                managerMenuWidget(taskState,id,taskCreater,taskManager),
             ],
           ),
         ),
@@ -182,108 +185,279 @@ Widget taskCardDetailCover({required int id, required int taskState, required St
   );
 }
 
-PopupMenuButton managerMenu = new PopupMenuButton<String>(
-    onSelected: (String value) {
-
-    },
-    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+Widget managerMenuWidget(int status,int id,String cer,String doer){
+  TextEditingController commitController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  final logic = Get.put(MyDemandBoardLogic());
+  return PopupMenuButton<String>(
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        if(status == 2)
+        PopupMenuItem(
+          child: GestureDetector(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(
+                  Icons.download_done,
+                  color: Colors.white,
+                ),
+                // SizedBox(width: 2,),
+                Text('已完成该需求'),
+              ],
+            ),
+            onTap: (){
+              DialogUtil.showConfirmDialog(
+                  context: context,
+                  child: finishDemandDialogContent(commitController,addressController),
+                  title:"完成需求"
+              ).then((value){
+                if(value == true){
+                  if(commitController.text.isEmpty){
+                    Fluttertoast.showToast(
+                      msg: "说明栏不能为空",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.redAccent,
+                    );
+                  }else if(addressController.text.isEmpty){
+                    Fluttertoast.showToast(
+                      msg: "项目地址不能为空",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.redAccent,
+                    );
+                   }else{
+                    DemandAPI().managerFinishDemandUrlPOST(id, cer, doer,
+                        commitController.text,addressController.text).then((value){
+                      if(value==0){
+                        DemandAPI().uploadDemandAddres(id, addressController.text).then((value){
+                          if(value == 0){
+                            logic.getAllDoingDemandList();
+                            Fluttertoast.showToast(
+                              msg: "success",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                            );
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            },
+          ),
+        ),
+        if(status == 1)
+        PopupMenuItem(
+          child: GestureDetector(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(Icons.highlight_off, color: Colors.white,),
+                // SizedBox(width: 2,),
+                Text('拒绝该需求')
+              ],
+            ),
+            onTap: (){
+              DialogUtil.showConfirmDialog(
+                  context: context,
+                  child: dialogContent(commitController),
+                  title: "拒绝需求"
+              ).then((value){
+                DemandAPI().managerRejectDemandUrlPOST(id, cer, doer, commitController.text).then((value){
+                  if(value == 0){
+                    logic.getAllDoingDemandList();
+                    Fluttertoast.showToast(
+                      msg: "success",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.green,
+                    );
+                  }
+                });
+              });
+            },
+          ),
+        ),
+        if(status == 1)
           PopupMenuItem(
             child: GestureDetector(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(
-                    Icons.download_done,
-                    color: Colors.white,
-                  ),
+                  Icon(Icons.download_done, color: Colors.white,),
                   // SizedBox(width: 2,),
-                  Text('已完成该需求'),
+                  Text('同意该需求')
                 ],
               ),
               onTap: (){
                 DialogUtil.showConfirmDialog(
                     context: context,
-                    child: dialogContent(),
-                    title:"完成需求"
-                );
+                    child: dialogContent(commitController),
+                    title: "同意需求"
+                ).then((value){
+                  DemandAPI().managerAcceptDemandUrlPOST(id, cer, doer, commitController.text).then((value){
+                    if(value == 0){
+                      logic.getAllDoingDemandList();
+                      Fluttertoast.showToast(
+                        msg: "success",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.green,
+                      );
+                    }
+                  });
+                });
               },
             ),
-
-            value: '完成',
           ),
+      ]
+  );
+}
+
+Widget createrMenuWidget(int status,int id,String cer,String doer){
+  TextEditingController commitController = TextEditingController();
+  final logic = Get.put(MyDemandBoardLogic());
+  return PopupMenuButton<String>(
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        if(status == 2)
+        PopupMenuItem(
+          child: GestureDetector(
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(Icons.download_done,color: Colors.white,),
+                // SizedBox(width: 2,),
+                Text('需求验收通过'),
+              ],
+            ),
+            onTap: (){
+              DialogUtil.showConfirmDialog(
+                  context: context,
+                  child: dialogContent(commitController),
+                  title: "通过验收"
+              ).then((value){
+                if(value == true){
+                  if(commitController.text.isEmpty){
+                    Fluttertoast.showToast(
+                      msg: "说明栏不能为空",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.redAccent,
+                    );
+                  }else{
+                    DemandAPI().createrAcceptResultUrlPOST(id, cer, doer,
+                        commitController.text).then((value){
+                       if(value==0){
+                         logic.getAllDoingDemandList();
+                           Fluttertoast.showToast(
+                             msg: "success",
+                             toastLength: Toast.LENGTH_LONG,
+                             gravity: ToastGravity.BOTTOM,
+                             backgroundColor: Colors.green,
+                           );
+                       }
+                    });
+                  }
+                }
+              });
+            },
+          ),
+        ),
+        if(status == 4)
           PopupMenuItem(
             child: GestureDetector(
-              child: Row(
+              child:  Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(Icons.highlight_off, color: Colors.white,),
+                  Icon(Icons.download_done,color: Colors.white,),
                   // SizedBox(width: 2,),
-                  Text('拒绝该需求')
+                  Text('需求验收通过'),
                 ],
               ),
               onTap: (){
                 DialogUtil.showConfirmDialog(
                     context: context,
-                    child: dialogContent(),
-                    title: "拒绝需求"
-                );
+                    child: dialogContent(commitController),
+                    title: "通过验收"
+                ).then((value){
+                  if(value == true){
+                    if(commitController.text.isEmpty){
+                      Fluttertoast.showToast(
+                        msg: "说明栏不能为空",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.redAccent,
+                      );
+                    }else{
+                      DemandAPI().createrAcceptedFromRejectedUrlPOST(id, cer, doer,
+                          commitController.text).then((value){
+                        if(value==0){
+                          logic.getAllDoingDemandList();
+                            Fluttertoast.showToast(
+                              msg: "success",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                            );
+                        }
+                      });
+                    }
+                  }
+                });
               },
             ),
-            value: '拒绝',
           ),
-        ]
-);
-
-
-
-PopupMenuButton createrMenu = new PopupMenuButton<String>(
-    onSelected: (String value) {
-
-    },
-    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-      PopupMenuItem(
-        child: GestureDetector(
-          child:  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Icon(Icons.download_done,color: Colors.white,),
-              // SizedBox(width: 2,),
-              Text('需求验收通过'),
-            ],
+        if(status == 2)
+        PopupMenuItem(
+          child: GestureDetector(
+            child:Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(Icons.highlight_off,color: Colors.white,),
+                // SizedBox(width: 2,),
+                Text('需求验收未通过'),
+              ],
+            ),
+            onTap: (){
+              DialogUtil.showConfirmDialog(
+                  context: context,
+                  child: dialogContent(commitController),
+                  title: "未通过验收"
+              ).then((value){
+                if(value == true){
+                  if(commitController.text.isEmpty){
+                    Fluttertoast.showToast(
+                      msg: "说明栏不能为空",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.redAccent,
+                    );
+                  }else{
+                    DemandAPI().createrRejectResultUrlPOST(id, cer, doer,
+                        commitController.text).then((value){
+                      if(value==0){
+                        logic.getAllDoingDemandList();
+                          Fluttertoast.showToast(
+                            msg: "success",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Colors.green,
+                          );
+                      }
+                    });
+                  }
+                }
+              });
+            },
           ),
-          onTap: (){
-            DialogUtil.showConfirmDialog(
-                context: context,
-                child: dialogContent(),
-                title: "通过验收"
-            );
-          },
-        ),
-        value: '通过',
-      ),
-      PopupMenuItem(
-        child: GestureDetector(
-          child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Icon(Icons.highlight_off,color: Colors.white,),
-              // SizedBox(width: 2,),
-              Text('需求验收未通过'),
-            ],
-          ),
-          onTap: (){
-            DialogUtil.showConfirmDialog(
-                context: context,
-                child: dialogContent(),
-                title: "未通过验收"
-            );
-          },
-        ),
-        value: '未通过',
-      )
-    ]);
+        )
+      ]);
+}
 
-Widget dialogContent(){
+Widget dialogContent(TextEditingController controller){
   return Card(
       margin: EdgeInsets.all(4),
       child: SizedBox(
@@ -304,6 +478,7 @@ Widget dialogContent(){
               child:  Padding(
                 padding: EdgeInsets.all(4),
                 child: TextField(
+                  controller: controller,
                   style: TextStyle(
                       color: Colors.black
                   ),
@@ -311,6 +486,61 @@ Widget dialogContent(){
                 ),
               ),
             ),
+          ],
+        ),
+      )
+  );
+}
+
+Widget finishDemandDialogContent(TextEditingController commitController,TextEditingController addressController,){
+  return Card(
+      margin: EdgeInsets.all(4),
+      child: SizedBox(
+        width: 320,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+                Text(
+                  '项目地址:',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white
+                  ),
+                ),
+            Container(
+              color: Colors.white,
+              child:  Padding(
+                padding: EdgeInsets.all(4),
+                child: TextField(
+                  controller: addressController,
+                  style: TextStyle(
+                      color: Colors.black
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+            ),
+                Text(
+                  '说明:',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white
+                  ),
+                ),
+                Container(
+                  color: Colors.white,
+                  child:  Padding(
+                    padding: EdgeInsets.all(4),
+                    child: TextField(
+                      controller: commitController,
+                      style: TextStyle(
+                          color: Colors.black
+                      ),
+                      maxLines: 4,
+                    ),
+                  ),
+                ),
           ],
         ),
       )
@@ -427,15 +657,15 @@ Widget timeLineWidget(List<Map> flowInfo){
 }
 
 /// 下载文档
-Widget taskCardGetFileComponent(int id) {
+Widget taskCardGetFileComponent(int id, String address) {
   return ClipRRect(
     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
     child: Container(
       color: Colors.white,
       padding: EdgeInsets.all(10),
-      child: Column(
+      child: Row(
         children: [
-          ElevatedButton(
+          Expanded(child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -444,7 +674,7 @@ Widget taskCardGetFileComponent(int id) {
               primary: HexColor.fromHex('FEBE16'),
             ),
             onPressed: () {
-
+              downLoadDemandFile(id);
             },
             child: Container(
               height: 36,
@@ -459,15 +689,37 @@ Widget taskCardGetFileComponent(int id) {
                 ),
               ),
             ),
-          ),
+          ),),
+          if(address.isNotEmpty)
           SizedBox(
-            height: 6,
+            width: 6,
           ),
-          // Text('5 人已下载需求文档', style: TextStyle(
-          //   color: Colors.grey,
-          //   fontSize: 12,
-          //   fontWeight: FontWeight.w500,
-          // ))
+         if(address.isNotEmpty)
+           Expanded(child:  ElevatedButton(
+             style: ElevatedButton.styleFrom(
+               shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(12),
+               ),
+               elevation: 0,
+               primary: HexColor.fromHex('FEBE16'),
+             ),
+             onPressed: () {
+               _launchInBrowser(address);
+             },
+             child: Container(
+               height: 36,
+               child: Center(
+                 child: Text(
+                   '查看项目',
+                   style: TextStyle(
+                     fontSize: 15,
+                     color: Colors.black87,
+                     fontWeight: FontWeight.bold,
+                   ),
+                 ),
+               ),
+             ),
+           ),),
         ],
       ),
     ),
@@ -477,6 +729,17 @@ Widget taskCardGetFileComponent(int id) {
 void downLoadDemandFile(int id){
   final logic = Get.put(MyDemandBoardLogic());
   logic.getDemandFile(id);
+}
+
+Future<void> _launchInBrowser(String url) async {
+  if (!await launch(
+    url,
+    forceSafariVC: false,
+    forceWebView: false,
+    headers: <String, String>{'my_header_key': 'my_header_value'},
+  )) {
+    throw 'Could not launch $url';
+  }
 }
 
 /// 三行文字

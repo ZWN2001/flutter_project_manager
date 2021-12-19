@@ -46,6 +46,9 @@ class FoldingCell extends StatefulWidget {
   ///ddl
   final String taskDeadLine;
 
+  ///项目地址
+  final String address;
+
   // ///timeLine：近期改动
   // final String timeLineBaseInfo;
 
@@ -60,6 +63,7 @@ class FoldingCell extends StatefulWidget {
     required this.taskCreateTime,
     required this.taskManager,
     required this.taskDeadLine,
+    required this.address,
     required this.onChanged,
     this.foldingState = FoldingState.close,
   }) : super(key: key);
@@ -255,7 +259,7 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                         child: FoldingComponent(
                           isFrontShowing: true,
                           frontChild: Container(
-                            child: taskCardGetFileComponent(widget.id),
+                            child: taskCardGetFileComponent(widget.id,widget.address),
                           ),
                           animation: generateAnimation(
                             beginAngle: 0.0,

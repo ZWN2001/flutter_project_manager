@@ -28,16 +28,18 @@ class MyDemandBoardPage extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 5,
-                  child: Column(
-                    children: [
+                  child: GetBuilder<MyDemandBoardLogic>(
+                    builder: (value)=>Column(
+                      children: [
                       AllMyDemands(
-                        demandsData: logic.allDoingDemands,
-                      ),
-                      // if (Responsive.isMobile(context))
-                        SizedBox(height: defaultPadding),
-                      // if (Responsive.isMobile(context))
-                        StorageDetails(),
-                    ],
+                          demandsData: logic.allDoingDemands,
+                        ),
+                        // // if (Responsive.isMobile(context))
+                        //   SizedBox(height: defaultPadding),
+                        // // if (Responsive.isMobile(context))
+                        //   StorageDetails(),
+                      ],
+                    ),
                   ),
                 ),
                 // if (!Responsive.isMobile(context))
