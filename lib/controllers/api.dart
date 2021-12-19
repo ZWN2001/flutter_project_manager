@@ -87,8 +87,27 @@ class DemandAPI{
         data.forEach((element) {
           result.add(element);
         });
-        print('getDoingDemandnList');
-        print(response);
+        return result;
+      }
+      return [];
+    } on DioError {
+      print(DioError);
+      return [];
+    }
+  }
+
+  Future<List<Map>> getDoneDemandnList() async {
+    try {
+      Response response = await Connection.dio().post(
+          _doneDemandUrlPOST,
+          options: Options(headers: {'token': Connection.getToken()}));
+      if(response.data['code'] == 0){
+
+        List<dynamic> data = response.data['data'];
+        List<Map> result = [];
+        data.forEach((element) {
+          result.add(element);
+        });
         return result;
       }
       return [];

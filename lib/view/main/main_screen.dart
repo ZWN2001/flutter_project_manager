@@ -2,6 +2,7 @@ import 'package:admin/controllers/menu_controller.dart';
 import 'package:admin/utils/responsive.dart';
 import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:admin/view/add_demand/AddDemandView.dart';
+import 'package:admin/view/archived_demand_board/archived_demand_board_view.dart';
 import 'package:admin/view/demand_board/my_demand_board_view.dart';
 import 'package:admin/view/log/log_view.dart';
 import 'package:admin/view/profile/profile_view.dart';
@@ -50,6 +51,7 @@ class MainScreenLogic extends GetxController{
     LogPage(),
     AddDemandPage(),
     MyDemandBoardPage(),
+    ArchivedDemandBoardPage(),
     ProfilePage(),
     // TODO: add here
   ];
@@ -68,10 +70,10 @@ class SideMenu extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-   final mainScreenController = Get.put(MainScreenLogic());
-   SharedPreferences _s = SharedPreferenceUtil.instance;
   @override
   Widget build(BuildContext context) {
+    final mainScreenController = Get.put(MainScreenLogic());
+    SharedPreferences _s = SharedPreferenceUtil.instance;
     return Drawer(
       child: ListView(
         children: [
@@ -104,13 +106,14 @@ class SideMenu extends StatelessWidget {
             title: "归档",
             svgSrc: "assets/icons/menu_doc.svg",
             press: () {
+              mainScreenController.selectedItem.value = 3;
             },
           ),
           DrawerListTile(
             title: "个人中心",
             svgSrc: "assets/icons/menu_profile.svg",
             press: () {
-              mainScreenController.selectedItem.value = 3;
+              mainScreenController.selectedItem.value = 4;
             },
           ),
           DrawerListTile(

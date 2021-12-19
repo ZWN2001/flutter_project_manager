@@ -22,8 +22,8 @@ class ColorUtil{
   static Color getColorByStatus(int n){
     switch (n){
       case 1 : return Colors.blue;//已创建
-      case 2 : return Colors.deepPurpleAccent;//执行中
-      case 3 : return Colors.orange;//已拒绝
+      case 2 : return Colors.orange;//执行中
+      case 3 : return Colors.deepPurpleAccent;//已拒绝
       case 4 : return Colors.amberAccent;//未通过
       case 5 : return Colors.green;//已完成
       case 6 : return Colors.red;//已超时
