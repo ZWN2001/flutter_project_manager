@@ -1,11 +1,12 @@
-import 'package:admin/models/allNeeds.dart';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import 'folding_cell.dart';
 
 class AllMyDemands extends StatelessWidget {
+  final List<Map> demandsData;
   const AllMyDemands({
     Key? key,
+    required this.demandsData,
   }) : super(key: key);
 
   @override
@@ -24,41 +25,51 @@ class AllMyDemands extends StatelessWidget {
             "所有需求",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          SizedBox(
-            width: double.infinity,
-            // height: double.infinity,
-            child:  ListView.builder(
-              shrinkWrap: true,
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) {
-                return FoldingCell(
-                  key: ValueKey(index),
-                  id: index + 1,
-                  taskState: AllNeeds.allNeeds[0]['taskState'],
-                  taskPriority: '高',
-                  taskTitle: '标题',
-                  timeLineInfo: [],
-                  taskProject: '2333',
-                  taskCreater: 'zwn',
-                  taskCreateTime: '2021-12-3 08:00',
-                  taskManager: 'whc',
-                  taskDeadLine: '2021-12-3 09:00',
-                  foldingState: openedIndices.contains(index) ? FoldingState.open : FoldingState.close,
-                  onChanged: (foldState) {
-                    if (foldState == FoldingState.open) {
-                      // print('打开了 cell -- $index');
-                      openedIndices.add(index);
-                    } else {
-                      // print('关闭了 cell -- $index');
-                      openedIndices.remove(index);
-                    }
-                  },
-                );
-              },
+          if(demandsData.isEmpty)
+            Center(
+              child: Text(
+                '暂无需求'
+              ),
             ),
-          ),
+          if (demandsData.isNotEmpty)
+            SizedBox(
+              width: double.infinity,
+              // height: double.infinity,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: demandsData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return FoldingCell(
+                    key: ValueKey(index),
+                    id: demandsData[index]['demand_id'],
+                    taskStatus: demandsData[index]['status'],
+                    taskPriority: demandsData[index]['priority'],
+                    taskTitle: demandsData[index]['title'],
+                    taskProject: demandsData[index]['project'],
+                    taskCreater: demandsData[index]['cer'],
+                    taskCreateTime: demandsData[index]['ctime'],
+                    taskManager: demandsData[index]['doer'],
+                    taskDeadLine: demandsData[index]['ddl'],
+                    foldingState: openedIndices.contains(index)
+                        ? FoldingState.open
+                        : FoldingState.close,
+                    onChanged: (foldState) {
+                      if (foldState == FoldingState.open) {
+                        // print('打开了 cell -- $index');
+                        openedIndices.add(index);
+                      } else {
+                        // print('关闭了 cell -- $index');
+                        openedIndices.remove(index);
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
   }
+
+
 }

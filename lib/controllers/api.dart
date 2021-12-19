@@ -1,7 +1,5 @@
 //参照i山大格式
 
-import 'dart:math';
-
 import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,6 +71,79 @@ class DemandAPI{
     } on DioError {
       print(DioError);
       return -1;
+    }
+  }
+
+  Future<List<Map>> getDoingDemandnList() async {
+    try {
+      Response response = await Connection.dio().post(
+          _doingDemandUrlPOST,
+          options: Options(headers: {'token': Connection.getToken()}));
+      if(response.data['code'] == 0){
+
+        List<dynamic> data = response.data['data'];
+        List<Map> result = [];
+        data.forEach((element) {
+          result.add(element);
+        });
+        print('getDoingDemandnList');
+        print(response);
+        return result;
+      }
+      return [];
+    } on DioError {
+      print(DioError);
+      return [];
+    }
+  }
+
+  Future<String> getDemandFile(int demandID) async {
+    try {
+      Response response = await Connection.dio().post(
+        _downloadDemandFileUrlPOST,
+        options: Options(headers: {'token': Connection.getToken()}),
+        queryParameters: {
+          'demand_id': demandID,
+        },
+      );
+      if(response.data['code'] == 0){
+        String data = response.data['data'];
+        return data;
+      }
+      return '';
+    } on DioError {
+      print(DioError);
+      return '';
+    }
+  }
+}
+
+class LogAPI{
+  static String _getProjectLogUrlPOST = '/log/demand';
+
+  Future<List<Map>> getDemandLog(int id) async {
+    try {
+      Response response = await Connection.dio().post(
+          _getProjectLogUrlPOST,
+          options: Options(headers: {'token': Connection.getToken()}),
+        queryParameters: {
+          'demand_id': id,
+        },
+      );
+      if(response.data['code'] == 0){
+        var data = response.data['data'];
+        List<Map> result = [];
+        data.forEach((element) {
+          result.add(element);
+        });
+        print(id);
+        print(response);
+        return result;
+      }
+      return [];
+    } on DioError {
+      print(DioError);
+      return [];
     }
   }
 }

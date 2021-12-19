@@ -11,6 +11,9 @@ import 'my_demand_board_logic.dart';
 class MyDemandBoardPage extends StatelessWidget {
   final logic = Get.put(MyDemandBoardLogic());
 
+  //会报错
+  //The provided ScrollController is currently attached to more than one ScrollPosition.
+  //暂时无解（两个滑动发生了冲突）
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,7 +30,9 @@ class MyDemandBoardPage extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                      AllMyDemands(),
+                      AllMyDemands(
+                        demandsData: logic.allDoingDemands,
+                      ),
                       // if (Responsive.isMobile(context))
                         SizedBox(height: defaultPadding),
                       // if (Responsive.isMobile(context))

@@ -1,5 +1,6 @@
 import 'package:admin/constants.dart';
 import 'package:admin/utils/sharedpreference_util.dart';
+import 'package:admin/view/login/login_view.dart';
 import 'package:admin/view/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
             create: (context) => MenuController(),
           ),
         ],
-        child: MainScreen(), //MainScreen
+        child: LoginPage(), //MainScreen
       )
     );
   }
