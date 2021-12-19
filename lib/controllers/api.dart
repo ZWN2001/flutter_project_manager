@@ -121,7 +121,7 @@ class DemandAPI{
     }
   }
 
-  Future<int> uploadDemandAddres(int id,String address) async {
+  Future<int> uploadDemandAddres(int id,String address,String commit) async {
     try {
       Response response = await Connection.dio().post(
         _uploadDemandAddressUrlPOST,
@@ -129,6 +129,7 @@ class DemandAPI{
         queryParameters: {
           'demand_id': id,
           'address': address,
+          'commit': commit,
         },
       );
       return response.data['code'];

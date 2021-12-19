@@ -230,7 +230,8 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                     DemandAPI().managerFinishDemandUrlPOST(id, cer, doer,
                         commitController.text,addressController.text).then((value){
                       if(value==0){
-                        DemandAPI().uploadDemandAddres(id, addressController.text).then((value){
+                        DemandAPI().uploadDemandAddres(id, addressController.text
+                            ,commitController.text).then((value){
                           if(value == 0){
                             logic.getAllDoingDemandList();
                             Fluttertoast.showToast(
