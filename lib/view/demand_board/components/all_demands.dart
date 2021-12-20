@@ -41,15 +41,15 @@ class AllMyDemands extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return FoldingCell(
                     key: ValueKey(index),
-                    id: demandsData[index]['demand_id'],
-                    taskStatus: demandsData[index]['status'],
-                    taskPriority: demandsData[index]['priority'],
-                    taskTitle: demandsData[index]['title'],
-                    taskProject: demandsData[index]['project'],
-                    taskCreater: demandsData[index]['cer'],
-                    taskCreateTime: demandsData[index]['ctime'],
-                    taskManager: demandsData[index]['doer'],
-                    taskDeadLine: demandsData[index]['ddl'],
+                    id: demandsData[index]['demand_id']??'',
+                    taskStatus: demandsData[index]['status']??'',
+                    taskPriority: demandsData[index]['priority']??'',
+                    taskTitle: demandsData[index]['title']??'',
+                    taskProject: demandsData[index]['project']??'',
+                    taskCreater: demandsData[index]['cer']??'',
+                    taskCreateTime: demandsData[index]['ctime']??'',
+                    taskManager: demandsData[index]['doer']??'',
+                    taskDeadLine: demandsData[index]['ddl']??'',
                     address: demandsData[index]['address']??'',
                     foldingState: openedIndices.contains(index)
                         ? FoldingState.open

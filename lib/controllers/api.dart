@@ -1,7 +1,7 @@
 //参照i山大格式
-
+import 'dart:html' as html;
 import 'package:admin/utils/sharedpreference_util.dart';
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' ;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Connection {
@@ -48,7 +48,7 @@ class DemandAPI{
   static String _doingDemandUrlPOST = '/demand/doing';
   static String _doneDemandUrlPOST = '/demand/done';
   static String _uploadDemandAddressUrlPOST = '/demand/github';
-  static String _uploadDemandFileUrlPOST = '/demand/upload';
+  static String _uploadDemandFileUrlPOST = 'http://localhost:8081/demand/upload';
   static String _downloadDemandFileUrlPOST = '/demand/download';
   static String _changeDemandStatusUrlPOST = '/demand/';
   static String _sendEmailUrlPOST = '/demand/email';
@@ -102,7 +102,6 @@ class DemandAPI{
           _doneDemandUrlPOST,
           options: Options(headers: {'token': Connection.getToken()}));
       if(response.data['code'] == 0){
-
         List<dynamic> data = response.data['data'];
         List<Map> result = [];
         data.forEach((element) {
@@ -115,6 +114,68 @@ class DemandAPI{
       print(DioError);
       return [];
     }
+  }
+
+  void sendDemandFile(int id){
+    try {
+        html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+        uploadInput.multiple = false;
+        uploadInput.click();
+        uploadInput.onChange.listen((e) async {
+          final files = uploadInput.files;
+          _sendFormData(files![0], id);
+          //flutter不支持dart:io
+          // FormData formdata = FormData.fromMap({
+          //   "file": await MultipartFile.fromFile(files![0].relativePath!, filename: files[0].name)
+          // });
+          // await Connection.dio().post(
+          //     _uploadDemandFileUrlPOST,
+          //     options: Options(headers:{'token':Connection.getToken()}),
+          //     queryParameters: {
+          //       'denamd_id': id,
+          //     },
+          //   data: formdata
+          // ).then((value){
+          //   if(value.data['code'] == 0){
+          //     Fluttertoast.showToast(
+          //       msg: "success",
+          //       toastLength: Toast.LENGTH_LONG,
+          //       gravity: ToastGravity.BOTTOM,
+          //       // backgroundColor: Colors.redAccent,
+          //     );
+          //   }
+          // });
+        });
+    }on Error{
+    }
+  }
+
+  _sendFormData(final html.File file,int id) async {
+    final reader = html.FileReader();
+    reader.readAsArrayBuffer(file);
+    final html.FormData formData = html.FormData()
+      ..appendBlob('uploadFile', file)
+      ..append('demand_id', '$id');
+
+    handleRequest(html.HttpRequest httpRequest) {
+      switch (httpRequest.status) {
+        case 200:
+          return;
+        default:
+          break;
+      }
+    }
+
+    html.HttpRequest.request(
+      _uploadDemandFileUrlPOST,
+      method: 'POST',
+      requestHeaders: {'token': Connection.getToken()!},
+      sendData: formData,
+    ).then((httpRequest) {
+      handleRequest(httpRequest);
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 
   Future<String> getDemandFile(int demandID) async {
