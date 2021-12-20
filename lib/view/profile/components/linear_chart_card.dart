@@ -1,17 +1,22 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'linear_chart.dart';
 
 class LinearChartCard extends StatefulWidget {
-  const LinearChartCard({Key? key}) : super(key: key);
+  final List<FlSpot> list;
+  const LinearChartCard({Key? key, required this.list}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => LinearChartCardState();
+  State<StatefulWidget> createState() => LinearChartCardState(list: list);
 }
 
 class LinearChartCardState extends State<LinearChartCard> {
   late bool isShowingMainData;
+  final List<FlSpot> list;
+
+  LinearChartCardState({Key? key, required this.list});
 
   @override
   void initState() {
@@ -67,7 +72,7 @@ class LinearChartCardState extends State<LinearChartCard> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16.0, left: 6.0),
-                    child: LinearChart(isShowingMainData: isShowingMainData),
+                    child: LinearChart(isShowingMainData: isShowingMainData, list: list,),
                   ),
                 ),
                 SizedBox(

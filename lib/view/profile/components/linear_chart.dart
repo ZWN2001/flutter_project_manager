@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class LinearChart extends StatelessWidget {
   final bool isShowingMainData;
+  final List<FlSpot> list;
 
-  const LinearChart({required this.isShowingMainData});
+  const LinearChart({required this.isShowingMainData, required this.list});
 
   @override
   Widget build(BuildContext context) {
@@ -159,15 +160,16 @@ class LinearChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: FlDotData(show: false),
     belowBarData: BarAreaData(show: false),
-    spots: const [
-      FlSpot(1, 1),
-      FlSpot(3, 15),
-      FlSpot(5, 12),
-      FlSpot(7, 6),
-      FlSpot(9, 2),
-      // FlSpot(11, 22),
-      FlSpot(12, 18),
-    ],
+    spots: list,
+    // const [
+    //   FlSpot(1, 1),
+    //   FlSpot(3, 15),
+    //   FlSpot(5, 12),
+    //   FlSpot(7, 6),
+    //   FlSpot(9, 2),
+    //   // FlSpot(11, 22),
+    //   FlSpot(12, 18),
+    // ],
   );
 
   LineChartBarData get lineChartBarData2_1 => LineChartBarData(
@@ -178,15 +180,16 @@ class LinearChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: const [
-      FlSpot(1, 1),
-      FlSpot(3, 15),
-      FlSpot(5, 12),
-      FlSpot(7, 6),
-      FlSpot(9, 2),
-      FlSpot(11, 22),
-      FlSpot(12, 18),
-    ],
+    spots: list,
+    // const [
+    //   FlSpot(1, 1),
+    //   FlSpot(3, 15),
+    //   FlSpot(5, 12),
+    //   FlSpot(7, 6),
+    //   FlSpot(9, 2),
+    //   FlSpot(11, 22),
+    //   FlSpot(12, 18),
+    // ],
   );
 
 

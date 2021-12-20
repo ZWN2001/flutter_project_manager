@@ -43,6 +43,8 @@ dependencies:
   flutter_toggle_tab: ^1.1.7
   fluttertoast: ^8.0.8
   url_launcher: ^6.0.17
+  flutter_animated_dialog: ^2.0.1
+  ai_awesome_message: ^2.2.0
   http: ^0.13.4
 
 dev_dependencies:
