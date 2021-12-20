@@ -66,6 +66,7 @@ class LogController extends GetxController {
     token = s.getString('token') ?? "no";
     getAllLogs();
     getDemandDetail();
+    update();
   }
 }
 

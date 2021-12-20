@@ -21,7 +21,6 @@ class MyDemandBoardLogic extends GetxController {
   void getAllDoingDemandList()  {
      DemandAPI().getDoingDemandnList().then((value){
       allDoingDemands.value = value;
-      update();
     });
   }
 
@@ -86,9 +85,6 @@ class MyDemandBoardLogic extends GetxController {
     }
     return 'error';
   }
-
-
-
 }
 
 class MyDemandBoardBinding extends Bindings {
