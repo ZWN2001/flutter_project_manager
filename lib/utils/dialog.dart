@@ -41,7 +41,12 @@ class DialogUtil{
               onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
             ),
             TextButton(
-              child: Text("确认"),
+              child: Text(
+                  "确认",
+                style: TextStyle(
+                  fontSize: 12
+                ),
+              ),
               onPressed: () {
                 //关闭对话框并返回true
                 Navigator.of(context).pop(true);

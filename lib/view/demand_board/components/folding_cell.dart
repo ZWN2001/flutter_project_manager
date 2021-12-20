@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:admin/controllers/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +23,10 @@ class FoldingCell extends StatefulWidget {
   final int id;
 
   ///状态
-  final String taskState;
+  final int taskStatus;
 
   ///优先级
-  final String taskPriority;
+  final int taskPriority;
 
   ///标题
   final String taskTitle;
@@ -45,13 +46,16 @@ class FoldingCell extends StatefulWidget {
   ///ddl
   final String taskDeadLine;
 
-  ///timeLine
-  final List timeLineInfo;
+  ///项目地址
+  final String address;
+
+  // ///timeLine：近期改动
+  // final String timeLineBaseInfo;
 
   const FoldingCell({
     Key? key,
     required this.id,
-    required this.taskState,
+    required this.taskStatus,
     required this.taskPriority,
     required this.taskTitle,
     required this.taskProject,
@@ -59,7 +63,7 @@ class FoldingCell extends StatefulWidget {
     required this.taskCreateTime,
     required this.taskManager,
     required this.taskDeadLine,
-    required this.timeLineInfo,
+    required this.address,
     required this.onChanged,
     this.foldingState = FoldingState.close,
   }) : super(key: key);
@@ -70,12 +74,11 @@ class FoldingCell extends StatefulWidget {
 
 class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  // late List<SingleState> timeLineStates = [];
+  List<Map> logList = [];
   @override
   void initState() {
     super.initState();
     _initController();
-    // initTimeLine();
   }
 
   void _initController(){
@@ -102,11 +105,6 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
     });
   }
 
-  // void initTimeLine(){
-  //   timeLineStates = widget.timeLineInfo.map<SingleState>((dynamic info){
-  //     return SingleState(stateTitle: info);
-  //   }).toList();
-  // }
   @override
   void dispose() {
     _controller.dispose();
@@ -116,26 +114,25 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
   /// 折叠或打开
   void toggle() {
     if (_controller.value == 1) {
+      LogAPI().getDemandLog(widget.id).then((value){
+        logList = value;
       _controller.reverse();
+      });
     } else {
-      _controller.forward();
+        _controller.forward();
     }
   }
 
-  /// 根据开始、结束角度 + 动画过程间隔生成 Animation，在这里我直接复制上一个视频中的代码，
-  /// 小伙们也可以自己封装成共用方法
+  /// 根据开始、结束角度 + 动画过程间隔生成 Animation，
+  /// 也可以自己封装成共用方法
   Animation<double> generateAnimation({
     beginAngle: double,
-
     /// 旋转的开始角度
     endAngle: double,
-
     /// 旋转结束角度
     intervalBegin: double,
-
     /// 该段动画起点
     intervalEnd: double,
-
     /// 该段动画结束点
   }) {
     return Tween<double>(begin: beginAngle, end: endAngle).animate(
@@ -190,7 +187,7 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                                 height: cardHeight,
                                 child: taskCardDetailCover(
                                   id:widget.id,
-                                  taskState:widget.taskState,
+                                  taskState:widget.taskStatus,
                                   taskManager:widget.taskManager,
                                   taskCreater: widget.taskCreater,
                                   taskCreateTime: widget.taskCreateTime,
@@ -204,7 +201,7 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                                 backChild: taskCardCover(
                                     id:widget.id,
                                     taskTitle: widget.taskTitle,
-                                    taskState:widget.taskState,
+                                    taskState:widget.taskStatus,
                                     taskPriority: widget.taskPriority,
                                     taskManager:widget.taskManager,
                                     taskCreater: widget.taskCreater,
@@ -245,7 +242,7 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                           isFrontShowing: true,
                           frontChild: Container(
                             child: taskCardFlowChartComponent(
-                              flowInfo: widget.timeLineInfo,
+                              flowInfo: logList,
                               context: context
                             ),
                           ),
@@ -262,7 +259,7 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                         child: FoldingComponent(
                           isFrontShowing: true,
                           frontChild: Container(
-                            child: taskCardGetFileComponent(),
+                            child: taskCardGetFileComponent(widget.id,widget.address),
                           ),
                           animation: generateAnimation(
                             beginAngle: 0.0,

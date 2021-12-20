@@ -1,18 +1,15 @@
 import 'package:admin/view/components/header.dart';
+import 'package:admin/view/demand_board/components/all_demands.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../constants.dart';
-import 'components/all_demands.dart';
-import 'my_demand_board_logic.dart';
+import 'archived_demand_board_logic.dart';
 
 
-class MyDemandBoardPage extends StatelessWidget {
-  final logic = Get.put(MyDemandBoardLogic());
+class ArchivedDemandBoardPage extends StatelessWidget {
+  final logic = Get.put(ArchivedDemandBoardLogic());
 
-  //会报错
-  //The provided ScrollController is currently attached to more than one ScrollPosition.
-  //暂时无解（两个滑动发生了冲突）
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,26 +17,21 @@ class MyDemandBoardPage extends StatelessWidget {
         padding: EdgeInsets.all(defaultPadding),
         child: Column(
           children: [
-            Header(title: '需求面板',),
+            Header(title: '归档需求',),
             SizedBox(height: defaultPadding),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 5,
-                  child: GetBuilder<MyDemandBoardLogic>(
-                    builder: (value)=>Column(
-                      children: [
-                      AllMyDemands(
-                          demandsData: logic.allDoingDemands,
+                  child: AllMyDemands(
+                          demandsData: logic.allDoneDemands,
                         ),
                         // // if (Responsive.isMobile(context))
                         //   SizedBox(height: defaultPadding),
                         // // if (Responsive.isMobile(context))
                         //   StorageDetails(),
-                      ],
-                    ),
-                  ),
+
                 ),
                 // if (!Responsive.isMobile(context))
                 //   SizedBox(width: defaultPadding),
