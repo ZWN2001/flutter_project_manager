@@ -1,10 +1,13 @@
 import 'package:admin/controllers/api.dart';
 import 'package:admin/utils/dialog.dart';
+import 'package:admin/view/demand_board/my_demand_board_logic.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class AddDemandLogic extends GetxController {
+  final logic = Get.put(MyDemandBoardLogic());
+
   RxBool hasInputTitle = true.obs;
   final TextEditingController titleController = TextEditingController();
   RxBool hasInputProject = true.obs;
@@ -122,6 +125,7 @@ class AddDemandLogic extends GetxController {
            await DemandAPI().createDemand(title, project, selectedDeadLine.value,
                selectedManager.value, priority).then((value) {
              if(value == 0){
+               logic.getAllDoingDemandList();
                Fluttertoast.showToast(
                  msg: "创建成功",
                  toastLength: Toast.LENGTH_LONG,
@@ -129,6 +133,8 @@ class AddDemandLogic extends GetxController {
                  backgroundColor: Colors.green,
                );
 
+               hasInputTitle.value = true;
+               hasInputProject.value = true;
                titleController.text = '';
                projectController.text = '';
                selectedDeadLine.value = '未选择截止日期';

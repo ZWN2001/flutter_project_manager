@@ -279,9 +279,9 @@ class DemandAPI{
       //给产品发邮件
       sendEmail(
           to:cer,
-          subject: '技术接受了你的需求',
-          text: '你的需求已被接受\n'+
-              '$doer接受了你的需求，需求ID为：$demandID\n'+
+          subject: '技术拒绝了你的需求',
+          text: '你的需求已被拒绝\n'+
+              '$doer拒绝了你的需求，需求ID为：$demandID\n'+
               '留言如下：\n'+ (commit.isEmpty?'无':commit)
       );
       print('managerRejectDemandUrlPOST');

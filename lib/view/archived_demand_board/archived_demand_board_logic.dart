@@ -10,14 +10,11 @@ class ArchivedDemandBoardLogic extends GetxController {
   void onInit() {
     super.onInit();
     getAllDoneDemandList();
-
   }
 
   void getAllDoneDemandList()  {
     DemandAPI().getDoneDemandnList().then((value){
       allDoneDemands.value = value;
-      print(value);
-      update();
     });
   }
 

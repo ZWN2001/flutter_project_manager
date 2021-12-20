@@ -234,7 +234,7 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                         DemandAPI().uploadDemandAddres(id, addressController.text
                             ,commitController.text).then((value){
                           if(value == 0){
-                            logic.getAllDoingDemandList();
+                            logic.refresh();
                             Fluttertoast.showToast(
                               msg: "success",
                               toastLength: Toast.LENGTH_LONG,
@@ -271,7 +271,7 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                 DemandAPI().managerRejectDemandUrlPOST(id, cer, doer, commitController.text)
                     .then((value){
                   if(value == 0){
-                    logic.getAllDoingDemandList();
+                    logic.refresh();
                     Fluttertoast.showToast(
                       msg: "success",
                       toastLength: Toast.LENGTH_LONG,
@@ -304,7 +304,7 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                   DemandAPI().managerAcceptDemandUrlPOST(id, cer, doer, commitController.text)
                           .then((value) {
                     if (value == 0) {
-                      logic.getAllDoingDemandList();
+                      logic.refresh();
                       Fluttertoast.showToast(
                         msg: "success",
                         toastLength: Toast.LENGTH_LONG,
@@ -355,7 +355,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer,String address
                     DemandAPI().createrAcceptResultUrlPOST(id, cer, doer,
                         commitController.text).then((value){
                        if(value==0){
-                         logic.getAllDoingDemandList();
+                         logic.refresh();
                            Fluttertoast.showToast(
                              msg: "success",
                              toastLength: Toast.LENGTH_LONG,
@@ -399,7 +399,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer,String address
                       DemandAPI().createrAcceptedFromRejectedUrlPOST(id, cer, doer,
                           commitController.text).then((value){
                         if(value==0){
-                          logic.getAllDoingDemandList();
+                          logic.refresh();
                             Fluttertoast.showToast(
                               msg: "success",
                               toastLength: Toast.LENGTH_LONG,
@@ -443,7 +443,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer,String address
                     DemandAPI().createrRejectResultUrlPOST(id, cer, doer,
                         commitController.text).then((value){
                       if(value==0){
-                        logic.getAllDoingDemandList();
+                        logic.refresh();
                           Fluttertoast.showToast(
                             msg: "success",
                             toastLength: Toast.LENGTH_LONG,

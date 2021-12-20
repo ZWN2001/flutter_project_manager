@@ -1,19 +1,21 @@
 import 'package:admin/controllers/api.dart';
 import 'package:admin/utils/file_downloader.dart';
+import 'package:admin/view/archived_demand_board/archived_demand_board_logic.dart';
+import 'package:admin/view/log/log_logic.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class MyDemandBoardLogic extends GetxController {
+  final logController = Get.put(LogController());
+  final archivedDemandBoardLogic = Get.put(ArchivedDemandBoardLogic());
   RxList<Map> allDoingDemands = [{}].obs;
-  // List allDemandsTimeLine = [];
   String demandFileUrl = '';
 
   @override
   void onInit() {
     super.onInit();
     getAllDoingDemandList();
-
   }
 
   void getAllDoingDemandList()  {
@@ -21,6 +23,12 @@ class MyDemandBoardLogic extends GetxController {
       allDoingDemands.value = value;
       update();
     });
+  }
+
+  void refresh(){
+    getAllDoingDemandList();
+    logController.getAllLogs();
+    archivedDemandBoardLogic.getAllDoneDemandList();
   }
 
   void getDemandFile(int id)  {
