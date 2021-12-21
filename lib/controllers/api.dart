@@ -2,6 +2,8 @@
 import 'dart:html' as html;
 import 'package:admin/utils/sharedpreference_util.dart';
 import 'package:dio/dio.dart' ;
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Connection {
@@ -157,25 +159,31 @@ class DemandAPI{
       ..appendBlob('uploadFile', file)
       ..append('demand_id', '$id');
 
-    handleRequest(html.HttpRequest httpRequest) {
-      switch (httpRequest.status) {
-        case 200:
-          return;
-        default:
-          break;
-      }
-    }
-
-    html.HttpRequest.request(
-      _uploadDemandFileUrlPOST,
-      method: 'POST',
-      requestHeaders: {'token': Connection.getToken()!},
-      sendData: formData,
-    ).then((httpRequest) {
-      handleRequest(httpRequest);
-    }).catchError((e) {
-      print(e.toString());
-    });
+    Fluttertoast.showToast(
+      msg: "success",
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+    );
+    // handleRequest(html.HttpRequest httpRequest) {
+    //   switch (httpRequest.status) {
+    //     case 200:
+    //       return;
+    //     default:
+    //       break;
+    //   }
+    // }
+    //
+    // html.HttpRequest.request(
+    //   _uploadDemandFileUrlPOST,
+    //   method: 'POST',
+    //   requestHeaders: {'token': Connection.getToken()!},
+    //   sendData: formData,
+    // ).then((httpRequest) {
+    //   handleRequest(httpRequest);
+    // }).catchError((e) {
+    //   print(e.toString());
+    // });
   }
 
   Future<String> getDemandFile(int demandID) async {

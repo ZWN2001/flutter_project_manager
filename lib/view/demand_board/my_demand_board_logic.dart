@@ -31,8 +31,8 @@ class MyDemandBoardLogic extends GetxController {
   }
 
   void getDemandFile(int id)  {
-    DemandAPI().getDemandFile(id).then((value){
-      demandFileUrl = value;
+    // DemandAPI().getDemandFile(id).then((value){
+      demandFileUrl = 'http://82.156.169.66/README.md';
       if(demandFileUrl.isNotEmpty){
         int n = FileDownloadUtil.downloadFile(demandFileUrl);
         if(n == -1){
@@ -52,7 +52,7 @@ class MyDemandBoardLogic extends GetxController {
         );
       }
 
-    });
+    // });
   }
 
   String translateStatus(int n){
