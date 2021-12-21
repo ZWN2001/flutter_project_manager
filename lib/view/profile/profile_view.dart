@@ -1,6 +1,6 @@
+import 'package:admin/utils/responsive.dart';
 import 'package:admin/view/profile/components/linear_chart_card.dart';
 import 'package:admin/view/profile/profile_logic.dart';
-import 'package:ai_awesome_message/ai_awesome_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -26,7 +26,7 @@ class ProfilePage extends StatelessWidget {
                   // Text("profile",style: Theme.of(context).textTheme.headline6, textAlign: TextAlign.left,),
                   Container(
                     margin: EdgeInsets.only(left: 36, top: 36, bottom: 36),
-                    padding: EdgeInsets.fromLTRB(30, 30, 16, 30),
+                    padding: EdgeInsets.fromLTRB(20, 20, 10, 20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       // border: new Border.all(color: Colors.white54, width: 0.5),
@@ -45,29 +45,29 @@ class ProfilePage extends StatelessWidget {
                         Column(
                           children: [
                             ClipOval(
-                              /*child: Container(
-                            height: 180,
-                            width: 180,
-                            color: Colors.blueAccent,
-                            child: Center(
-                              child: Text(
-                                "S",
-                                style: TextStyle(fontSize: 80),
-                              ),
-                            ),
-                          ),*/
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'images/lzw_img.png',
-                                  fit: BoxFit.fill,
-                                  width: 180,
+                              child: Container(
+                                height: 180,
+                                width: 180,
+                                color: Colors.blueAccent,
+                                child: Center(
+                                  child: Text(
+                                    controller.username.substring(0, 1),
+                                    style: TextStyle(fontSize: 80),
+                                  ),
                                 ),
                               ),
+                              // child: ClipOval(
+                              //   child: Image.asset(
+                              //     'images/lzw_img.png',
+                              //     fit: BoxFit.fill,
+                              //     width: 180,
+                              //   ),
+                              // ),
                             ),
                           ],
                         ),
                         Container(
-                          margin: EdgeInsets.only(left: 40),
+                          margin: EdgeInsets.only(left: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -120,15 +120,18 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  controller.myLogList.length == 0 ? noLogContainer() : buildMyLogContainer(),
-                ],
+            if (!Responsive.isMobile(context))
+              Expanded(
+                flex: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    controller.myLogList.length == 0
+                        ? noLogContainer()
+                        : buildMyLogContainer(),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -206,7 +209,10 @@ class ProfilePage extends StatelessWidget {
         minWidth: 300,
       ),
       child: Center(
-        child: Text('最近还没有提交记录哦，摸鱼人！', style: TextStyle(fontSize: 16),),
+        child: Text(
+          '最近还没有提交记录哦，摸鱼人！',
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }

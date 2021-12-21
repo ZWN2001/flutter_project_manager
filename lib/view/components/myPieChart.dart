@@ -44,12 +44,12 @@ class _MyPieChartState extends State<MyPieChart>
   //控制数字使用的
   late Animation<double> _numberAnimation;
   List _list = [
-    {"title": "已完成", "number": 0, "color": Colors.green},
-    {"title": "执行中", "number": 0, "color": Colors.deepOrangeAccent},
     {"title": "已创建", "number": 0, "color": Colors.blue},
+    {"title": "执行中", "number": 0, "color": Colors.deepOrangeAccent},
     {"title": "已拒绝", "number": 0, "color": Colors.redAccent},
-    {"title": "已超时", "number": 0, "color": Colors.deepPurple},
     {"title": "未通过", "number": 0, "color": Colors.amber},
+    {"title": "已完成", "number": 0, "color": Colors.green},
+    {"title": "已超时", "number": 0, "color": Colors.deepPurple},
   ];
 
   @override
@@ -58,7 +58,7 @@ class _MyPieChartState extends State<MyPieChart>
     numList.forEach((element) {
       all += element;
     });
-    //初始化一下
+    //初始化
     _animationController = new AnimationController(
       //执行时间为 1 秒
         duration: Duration(milliseconds: 1000),
