@@ -118,8 +118,9 @@ Widget taskCardCover({required int id, required int taskState, required String t
 }
 
 /// 展开后的封面
-Widget taskCardDetailCover({required int id, required int taskState, required String taskCreater,
-    required String taskCreateTime, required String taskManager, required String taskDeadLine}) {
+Widget taskCardDetailCover({required int id, required int taskState,
+  required String taskCreater, required String taskCreateTime,
+  required String taskManager, required String address, required String taskDeadLine}) {
  SharedPreferences s = SharedPreferenceUtil.instance;
  final logic = Get.put(MyDemandBoardLogic());
  return Container(
@@ -150,7 +151,7 @@ Widget taskCardDetailCover({required int id, required int taskState, required St
               ),
               Expanded(child: SizedBox(width: 12,)),
               if(s.getString('identity') == '产品')
-                createrMenuWidget(taskState, id, taskCreater, taskManager),
+                createrMenuWidget(taskState, id, taskCreater, taskManager, address),
               if(s.getString('identity') == '技术')
                 managerMenuWidget(taskState,id,taskCreater,taskManager),
             ],
@@ -233,7 +234,7 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                         DemandAPI().uploadDemandAddres(id, addressController.text
                             ,commitController.text).then((value){
                           if(value == 0){
-                            logic.getAllDoingDemandList();
+                            logic.refresh();
                             Fluttertoast.showToast(
                               msg: "success",
                               toastLength: Toast.LENGTH_LONG,
@@ -267,9 +268,10 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                   child: dialogContent(commitController),
                   title: "拒绝需求"
               ).then((value){
-                DemandAPI().managerRejectDemandUrlPOST(id, cer, doer, commitController.text).then((value){
+                DemandAPI().managerRejectDemandUrlPOST(id, cer, doer, commitController.text)
+                    .then((value){
                   if(value == 0){
-                    logic.getAllDoingDemandList();
+                    logic.refresh();
                     Fluttertoast.showToast(
                       msg: "success",
                       toastLength: Toast.LENGTH_LONG,
@@ -299,9 +301,10 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
                     child: dialogContent(commitController),
                     title: "同意需求"
                 ).then((value){
-                  DemandAPI().managerAcceptDemandUrlPOST(id, cer, doer, commitController.text).then((value){
-                    if(value == 0){
-                      logic.getAllDoingDemandList();
+                  DemandAPI().managerAcceptDemandUrlPOST(id, cer, doer, commitController.text)
+                          .then((value) {
+                    if (value == 0) {
+                      logic.refresh();
                       Fluttertoast.showToast(
                         msg: "success",
                         toastLength: Toast.LENGTH_LONG,
@@ -318,7 +321,7 @@ Widget managerMenuWidget(int status,int id,String cer,String doer){
   );
 }
 
-Widget createrMenuWidget(int status,int id,String cer,String doer){
+Widget createrMenuWidget(int status,int id,String cer,String doer,String address){
   TextEditingController commitController = TextEditingController();
   final logic = Get.put(MyDemandBoardLogic());
   return PopupMenuButton<String>(
@@ -352,7 +355,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer){
                     DemandAPI().createrAcceptResultUrlPOST(id, cer, doer,
                         commitController.text).then((value){
                        if(value==0){
-                         logic.getAllDoingDemandList();
+                         logic.refresh();
                            Fluttertoast.showToast(
                              msg: "success",
                              toastLength: Toast.LENGTH_LONG,
@@ -396,7 +399,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer){
                       DemandAPI().createrAcceptedFromRejectedUrlPOST(id, cer, doer,
                           commitController.text).then((value){
                         if(value==0){
-                          logic.getAllDoingDemandList();
+                          logic.refresh();
                             Fluttertoast.showToast(
                               msg: "success",
                               toastLength: Toast.LENGTH_LONG,
@@ -440,7 +443,7 @@ Widget createrMenuWidget(int status,int id,String cer,String doer){
                     DemandAPI().createrRejectResultUrlPOST(id, cer, doer,
                         commitController.text).then((value){
                       if(value==0){
-                        logic.getAllDoingDemandList();
+                        logic.refresh();
                           Fluttertoast.showToast(
                             msg: "success",
                             toastLength: Toast.LENGTH_LONG,
@@ -454,7 +457,23 @@ Widget createrMenuWidget(int status,int id,String cer,String doer){
               });
             },
           ),
-        )
+        ),
+        if(address.isNotEmpty||address == '')
+          PopupMenuItem(
+            child: GestureDetector(
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(Icons.attach_file,color: Colors.white,),
+                  // SizedBox(width: 2,),
+                  Text('上传需求文档'),
+                ],
+              ),
+              onTap: (){
+                  DemandAPI().sendDemandFile(id);
+                  },
+            ),
+          ),
       ]);
 }
 

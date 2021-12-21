@@ -191,7 +191,8 @@ class _FoldingCellState extends State<FoldingCell> with SingleTickerProviderStat
                                   taskManager:widget.taskManager,
                                   taskCreater: widget.taskCreater,
                                   taskCreateTime: widget.taskCreateTime,
-                                  taskDeadLine: widget.taskDeadLine
+                                  taskDeadLine: widget.taskDeadLine,
+                                  address: widget.address
                                 ),
                               ),
                             ),
