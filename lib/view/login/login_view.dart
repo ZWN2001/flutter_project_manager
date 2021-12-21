@@ -89,9 +89,9 @@ class LoginState extends State<LoginPage> with TickerProviderStateMixin {
             margin: EdgeInsets.only(bottom: 10),
             child: ClipOval(
               child: Image.asset(
-                'images/lzw_img.png',
-                fit: BoxFit.fill,
-                width: 160,
+                'images/login_logo.png',
+                fit: BoxFit.contain,
+                width: 140,
               ),
             ),
           ),
@@ -221,7 +221,7 @@ class LoginState extends State<LoginPage> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 25, 0, 0),
+            margin: EdgeInsets.fromLTRB(0, 35, 0, 0),
             child: Text(
               "no account? click double!",
               style: TextStyle(
