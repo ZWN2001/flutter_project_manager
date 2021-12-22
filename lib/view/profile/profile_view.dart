@@ -235,7 +235,7 @@ class DialogContent extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           color: Color(0xff292b49),
         ),
-        margin: EdgeInsets.only(top: 230, left: 380, right: 380, bottom: 230),
+        margin: EdgeInsets.only(top: 230, left: 380, right: 380, bottom: 150),
         width: 300,
         height: 200,
         child: Column(

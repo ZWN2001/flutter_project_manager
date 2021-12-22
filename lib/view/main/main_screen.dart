@@ -116,13 +116,6 @@ class SideMenu extends StatelessWidget {
               mainScreenController.selectedItem.value = 4;
             },
           ),
-          DrawerListTile(
-            title: "Settings",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {
-
-            },
-          ),
         ],
       ),
     );

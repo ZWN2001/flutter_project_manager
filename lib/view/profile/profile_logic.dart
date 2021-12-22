@@ -76,36 +76,44 @@ class ProfileController extends GetxController {
     String newPwd = newPwdController.text.trim();
     String confirmPwd = confirmPwdController.text.trim();
     if (oldPwd == "" || newPwd == "" || confirmPwd == "") {
-      Navigator.push(
-        Get.context!,
-        AwesomeMessageRoute(
-          awesomeMessage: AwesomeMessage(
-            title: "修改失败",
-            message: "信息不可为空",
-            borderRadius: 20,
-            backgroundColor: Colors.red[400]!,
-            awesomeMessagePosition: AwesomeMessagePosition.TOP,
-            margin: EdgeInsets.only(top: 30, left: 200, right: 200),
-          ),
-          theme: null,
-        ),
-      );
+      Fluttertoast.showToast(msg: "信息不可为空");
+      // Navigator.push(
+      //   Get.context!,
+      //   AwesomeMessageRoute(
+      //     awesomeMessage: AwesomeMessage(
+      //       title: "修改失败",
+      //       message: "信息不可为空",
+      //       borderRadius: 20,
+      //       backgroundColor: Colors.red[400]!,
+      //       awesomeMessagePosition: AwesomeMessagePosition.TOP,
+      //       margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+      //     ),
+      //     theme: null,
+      //   ),
+      // );
+      oldPwdController.clear();
+      newPwdController.clear();
+      confirmPwdController.clear();
       return;
     } else if (newPwd != confirmPwd) {
-      Navigator.push(
-        Get.context!,
-        AwesomeMessageRoute(
-          awesomeMessage: AwesomeMessage(
-            title: "修改失败",
-            message: "两次密码不同",
-            borderRadius: 20,
-            backgroundColor: Colors.red[400]!,
-            awesomeMessagePosition: AwesomeMessagePosition.TOP,
-            margin: EdgeInsets.only(top: 30, left: 200, right: 200),
-          ),
-          theme: null,
-        ),
-      );
+      Fluttertoast.showToast(msg: '两次密码不同');
+      // Navigator.push(
+      //   Get.context!,
+      //   AwesomeMessageRoute(
+      //     awesomeMessage: AwesomeMessage(
+      //       title: "修改失败",
+      //       message: "两次密码不同",
+      //       borderRadius: 20,
+      //       backgroundColor: Colors.red[400]!,
+      //       awesomeMessagePosition: AwesomeMessagePosition.TOP,
+      //       margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+      //     ),
+      //     theme: null,
+      //   ),
+      // );
+      oldPwdController.clear();
+      newPwdController.clear();
+      confirmPwdController.clear();
       return;
     } else {
       Dio dio = Dio();
@@ -136,19 +144,8 @@ class ProfileController extends GetxController {
         newPwdController.clear();
         confirmPwdController.clear();
       } else {
-        Navigator.push(
-          Get.context!,
-          AwesomeMessageRoute(
-            awesomeMessage: AwesomeMessage(
-              title: "修改失败",
-              borderRadius: 20,
-              backgroundColor: Colors.red[400]!,
-              awesomeMessagePosition: AwesomeMessagePosition.TOP,
-              margin: EdgeInsets.only(top: 30, left: 200, right: 200),
-            ),
-            theme: null,
-          ),
-        );
+        String message = response.data['message'];
+        Fluttertoast.showToast(msg: message);
         oldPwdController.clear();
         newPwdController.clear();
         confirmPwdController.clear();
