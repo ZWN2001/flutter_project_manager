@@ -144,8 +144,20 @@ class ProfileController extends GetxController {
         newPwdController.clear();
         confirmPwdController.clear();
       } else {
-        String message = response.data['message'];
-        Fluttertoast.showToast(msg: message);
+        Navigator.push(
+          Get.context!,
+          AwesomeMessageRoute(
+            awesomeMessage: AwesomeMessage(
+              title: "修改失败",
+              message: response.data['message'],
+              borderRadius: 20,
+              backgroundColor: Colors.red[400]!,
+              awesomeMessagePosition: AwesomeMessagePosition.TOP,
+              margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+            ),
+            theme: null,
+          ),
+        );
         oldPwdController.clear();
         newPwdController.clear();
         confirmPwdController.clear();

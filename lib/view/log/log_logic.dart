@@ -22,6 +22,8 @@ class LogController extends GetxController {
     int code = response.data['code'];
     if (code == 0) {
       allLogList.value = response.data['data'];
+      Iterable iterable = allLogList.reversed;
+      allLogList.value = iterable.toList();
     } else {
       Navigator.push(
         Get.context!,

@@ -187,10 +187,19 @@ class LoginController extends GetxController {
       );
       int code = response.data['code'];
       if (code == 0) {
-        Fluttertoast.showToast(
-          msg: "注册成功",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.TOP,
+        Navigator.push(
+          Get.context!,
+          AwesomeMessageRoute(
+            awesomeMessage: AwesomeMessage(
+              title: "注册成功",
+              message: '马上登录吧',
+              borderRadius: 20,
+              backgroundColor: Colors.green[400]!,
+              awesomeMessagePosition: AwesomeMessagePosition.TOP,
+              margin: EdgeInsets.only(top: 30, left: 200, right: 200),
+            ),
+            theme: null,
+          ),
         );
         return 0;
       } else {
